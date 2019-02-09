@@ -1,6 +1,6 @@
 Quake Report App
 ===================================
-
+This is the development branch of the project. All beta changes are made here which on testing are merged to the master branch.
 This app displays a list of recent earthquakes in the world
 from the U.S. Geological Survey (USGS) organization.
 Its a clone of a Beginning Android Nanodegree course of Udacity with some changes.
