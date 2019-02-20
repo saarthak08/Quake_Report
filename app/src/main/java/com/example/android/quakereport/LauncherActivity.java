@@ -2,6 +2,7 @@ package com.example.android.quakereport;
 
 import android.os.Build;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -23,13 +24,14 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+        ConstraintLayout constraintLayout=findViewById(R.id.cl);
         URL=setURL();
         final ProgressBar progressBar=findViewById(R.id.progressBar);
         Toast.makeText(LauncherActivity.this,"Created By: Saarthak Gupta",Toast.LENGTH_LONG).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                progressBar.animate().alpha(1).setDuration(500);
+                progressBar.animate().alpha(1).setDuration(200);
                 progressBar.setIndeterminate(true);
                 Internet_data task=new Internet_data(URL,LauncherActivity.this);
                 task.execute();
