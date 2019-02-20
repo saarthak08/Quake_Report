@@ -28,11 +28,11 @@ public class LauncherActivity extends AppCompatActivity {
         URL=setURL();
         final ProgressBar progressBar=findViewById(R.id.progressBar);
         Toast.makeText(LauncherActivity.this,"Created By: Saarthak Gupta",Toast.LENGTH_LONG).show();
+        progressBar.animate().alpha(1).setDuration(500);
+        progressBar.setIndeterminate(true);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                progressBar.animate().alpha(1).setDuration(200);
-                progressBar.setIndeterminate(true);
                 Internet_data task=new Internet_data(URL,LauncherActivity.this);
                 task.execute();
             }
@@ -43,7 +43,7 @@ public class LauncherActivity extends AppCompatActivity {
         String a=
                 "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&endtime=2019-02-10&limit=50&minmagnitude=5&orderby=time";
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String result= "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&endtime="+date+"&limit=50&minmagnitude=5&orderby=time";
+        String result= "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2019-01-01&endtime="+date+"&limit=20&minmagnitude=5&orderby=time";
         return result;
     }
 }

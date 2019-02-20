@@ -10,14 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.BreakIterator;
 import java.util.List;
 
-public class Adapter extends RecyclerView.Adapter<com.example.android.quakereport.Adapter.AdapterCustomViewHolder>
+public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     {
         private List<String> mEarthquake[];
+        private final int VIEW_TYPE_ITEM=1;
+        private final int VIEW_TYPE_LOADING=0;
 
         private Context mContext;
         public Adapter(EarthquakeActivity context, List<String>[] cn)
@@ -27,28 +31,41 @@ public class Adapter extends RecyclerView.Adapter<com.example.android.quakerepor
         }
         @NonNull
         @Override
-        public AdapterCustomViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item,viewGroup,false);
-            return new AdapterCustomViewHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+
+            if(viewType==VIEW_TYPE_ITEM) {
+                View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+                return new ItemViewHolder(view);
+            }
+            else{
+                View view=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_loading,viewGroup,false);
+                return new LoadingViewHolder(view);
+            }
         }
 
         @Override
-        public void onBindViewHolder(@NonNull AdapterCustomViewHolder adapterCustomViewHolder, int i) {
-            final int k=i;
-            adapterCustomViewHolder.textView1.setText(mEarthquake[1].get(i));
-            adapterCustomViewHolder.textView2.setText(mEarthquake[0].get(i));
-            GradientDrawable magnitudeCircle=(GradientDrawable)adapterCustomViewHolder.textView1.getBackground();
-            int magnitudecolor=getMagnitudeColor(mEarthquake[1].get(i));
-            magnitudeCircle.setColor(magnitudecolor);
-            adapterCustomViewHolder.textView3.setText(mEarthquake[2].get(i));
-            adapterCustomViewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i=new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(mEarthquake[3].get(k)));
-                    mContext.startActivity(i);
-                }
-            });
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            if(viewHolder instanceof  ItemViewHolder) {
+                final int k = i;
+                ItemViewHolder.textView1.setText(mEarthquake[1].get(i));
+                ItemViewHolder.textView2.setText(mEarthquake[0].get(i));
+                GradientDrawable magnitudeCircle = (GradientDrawable) ItemViewHolder.textView1.getBackground();
+                int magnitudecolor = getMagnitudeColor(mEarthquake[1].get(i));
+                magnitudeCircle.setColor(magnitudecolor);
+                ItemViewHolder.textView3.setText(mEarthquake[2].get(i));
+                ItemViewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(mEarthquake[3].get(k)));
+                        mContext.startActivity(i);
+                    }
+                });
+            }
+            else if(viewHolder instanceof LoadingViewHolder)
+            {
+                showLoadingView((LoadingViewHolder)viewHolder,i);
+            }
         }
         public int getMagnitudeColor(String mag)
         {
@@ -96,21 +113,36 @@ public class Adapter extends RecyclerView.Adapter<com.example.android.quakerepor
         }
 
         @Override
+        public int getItemViewType(int position) {
+            return mEarthquake[0].get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+        }
+
+        @Override
         public int getItemCount() {
-            return mEarthquake[0].size();
+            return mEarthquake[0]==null?0:mEarthquake[0].size();
         }
-        static class AdapterCustomViewHolder extends RecyclerView.ViewHolder
-        {
-            TextView textView1;
-            TextView textView2;
-            TextView textView3;
-            RelativeLayout relativeLayout;
-            public AdapterCustomViewHolder(@NonNull View itemView) {
-                super(itemView);
-                textView1=itemView.findViewById(R.id.textView1);
-                textView2=itemView.findViewById(R.id.textView2);
-                textView3=itemView.findViewById(R.id.textView3);
-                relativeLayout=itemView.findViewById(R.id.relative_layout);
-            }
+        private void showLoadingView(LoadingViewHolder viewHolder, int position) {
         }
+        static class ItemViewHolder extends RecyclerView.ViewHolder
+     {
+        public static TextView textView1;
+        public static TextView textView2;
+        public static TextView textView3;
+        public static RelativeLayout relativeLayout;
+        public ItemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textView1=itemView.findViewById(R.id.textView1);
+            textView2=itemView.findViewById(R.id.textView2);
+            textView3=itemView.findViewById(R.id.textView3);
+            relativeLayout=itemView.findViewById(R.id.relative_layout);
+        }
+    }
+    static class LoadingViewHolder extends RecyclerView.ViewHolder
+    {
+        ProgressBar progressBar;
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar=itemView.findViewById(R.id.progressBar2);
+        }
+    }
 }
